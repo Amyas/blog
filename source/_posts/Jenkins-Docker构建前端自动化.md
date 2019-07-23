@@ -315,7 +315,9 @@ cat /home/jenkins_config/secrets/initialAdminPassword
 </div>
 
 Payload URL 格式为:
+``` bash
 http://<User ID>:<API Token>@<Jenkins IP地址>:端口/generic-webhook-trigger/invoke?token=<Project Token>
+```
 
 * UserID 点击 Jenkins 右上角用户名查看
 * API Token 点击 Jenkins 右上角用户名后，点击左侧设置，找到 API Token 进行添加
