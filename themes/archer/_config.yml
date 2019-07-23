@@ -2,13 +2,13 @@
 # avatar
 avatar: /avatar/Misaka.jpg
 # author name
-author: amyas
+author: Amyas
 # signature
 signature: witness me
 # SNS (you can custom the order)
 social:
   email: 707804052@qq.com
-  github: //github.com/amyas
+  github: //github.com/Amyas
   # wechat and qq should be a path of qr-code image
   wechat: /assets/example_qr.png
   qq: 
@@ -39,14 +39,14 @@ about:
 
 # ========== Site ========== #
 # title of the site (good for SEO)
-SEO_title: amyas's Studio
+SEO_title: Amyas's Blog
 # keywords for site (good for SEO)
 SEO_keywords:
   - hexo
   - 'hexo-theme'
   - 'hexo-blog'
 # main title shown in header image
-main_title: amyas's Studio.
+main_title: Amyas's Blog.
 # subtitle
 subtitle: it's better to burn out than to fade away
 # site haeder image
