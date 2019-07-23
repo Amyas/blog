@@ -1,0 +1,6 @@
+node_modules/
+public
+.gitignore
+db.json
+yarn.lock
+Dockerfile
