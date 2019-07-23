@@ -1,4 +1,4 @@
-FROM node AS builder
+FROM node
 
 WORKDIR /home/hexo_blog
 
