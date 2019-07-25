@@ -2,6 +2,10 @@
   "name": "hexo-site",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "public": "hexo clean && hexo g -w",
+    "dev": "live-server public --port=8848"
+  },
   "hexo": {
     "version": "3.9.0"
   },

@@ -2,6 +2,7 @@
 title: MongoDB学习总结
 date: 2019-07-24 10:37:11
 tags:
+    MongoDB
 ---
 
 ## 常用操作
@@ -100,6 +101,19 @@ const db = connect('school')
 const result = db.runCommand(command)
 // 打印结果
 printjson(result)
+```
+
+### 游标
+
+``` js
+const db = connect('school')
+
+// 返回的是一个游标，指向结果的一个指针
+const cursor = db.students.find()
+
+cursor.forEach(function(item) {
+    printjson(item)
+})
 ```
 
 
@@ -445,4 +459,380 @@ db.COLLECTION_NAME.count()
 
 # 查询结果:
     { "name" : "amyas", "age" : 30 }
+
+# $not取反和$nin相同
+    db.student.find({age:{$not:{$in:[10,20]}}})
+结果和上面$nin相同
+```
+
+### $gt 大于操作符、$gte 大于等于操作符
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10 }
+    { "name" : "zfpx20", "age" : 20 }
+    { "name" : "zfpx30", "age" : 30 }
+    { "name" : "zfpx40", "age" : 40 }
+    { "name" : "zfpx50", "age" : 50 }
+    { "name" : "zfpx60", "age" : 60 }
+    { "name" : "zfpx70", "age" : 70 }
+    { "name" : "zfpx80", "age" : 80 }
+
+# 执行查询操作:
+    db.student.find({age:{$gt:50}})
+
+# 查询结果:
+    { "name" : "zfpx60", "age" : 60 }
+    { "name" : "zfpx70", "age" : 70 }
+    { "name" : "zfpx80", "age" : 80 }
+
+# $gte是大于等于
+
+# 可以配合 $not 使用取反，可以配合 $lt 取范围
+```
+
+### $lt 小于操作符、$lte 小于等于操作符
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10 }
+    { "name" : "zfpx20", "age" : 20 }
+    { "name" : "zfpx30", "age" : 30 }
+    { "name" : "zfpx40", "age" : 40 }
+    { "name" : "zfpx50", "age" : 50 }
+    { "name" : "zfpx60", "age" : 60 }
+    { "name" : "zfpx70", "age" : 70 }
+    { "name" : "zfpx80", "age" : 80 }
+
+# 执行查询操作:
+    db.student.find({age:{$lt:50}})
+
+# 查询结果:
+    { "name" : "zfpx10", "age" : 10 }
+    { "name" : "zfpx20", "age" : 20 }
+    { "name" : "zfpx30", "age" : 30 }
+    { "name" : "zfpx40", "age" : 40 }
+
+# $lte是小于等于
+
+# 可以配合 $not 使用取反，可以配合 $gt 取范围
+```
+
+### $all 匹配数组中包含所有字段的数据
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b", "d" ] }
+
+# 执行查询操作:
+    db.student.find({hobby:{$all:['a','b']}})
+
+# 查询结果:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b", "d" ] }
+```
+
+### $size 获取指定数组长度的数组
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b" ] }
+
+# 执行查询操作:
+    db.student.find({hobby:{$size:3}})
+
+# 查询结果:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+```
+
+### $slice 显示查询结果数组的指定长度
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b", "d" ] }
+
+# 执行查询操作:
+    db.student.find({hobby:{$size:3}},{hobby:{$slice:2}})
+
+# 查询结果:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b" ] }
+
+# $slice:-1 从最后一个开始 
+```
+
+### $where 万能查询
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b", "d" ] }
+
+# 执行查询操作:
+    db.student.find({$where:"this.age === 10"})
+
+# 查询结果:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+```
+
+### $or 或
+
+```
+# 原数据:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b", "d" ] }
+
+# 执行查询操作:
+    db.student.find({$or:[{name:'zfpx10'},{age:20}]})
+
+# 查询结果:
+    { "name" : "zfpx10", "age" : 10, "hobby" : [ "a", "b", "c" ] }
+    { "name" : "zfpx20", "age" : 20, "hobby" : [ "a", "b", "d" ] }
+```
+
+### skip、limit 分页查询
+
+```
+var pageNumber = 1;
+var pageSize = 3;
+db.student.find().skip((pageNumber-1)*pageSize).limit(pageSize)
+```
+
+### sort 排序
+
+```
+正序：从小到大 1
+倒序：从大到小 -1
+
+db.student.find().sort(age:-1)
+```
+
+### explain 获取查询结果的详情分析
+
+```
+db.COLLECTION_NAME.find().explain(true)
+```
+
+## 索引
+
+先插入100万数据，方便我们使用
+
+``` js
+var arr = []
+for(var i = 1; i <= 1000000; i++) {
+  arr.push({
+    name:'zfpx' + i,
+    age:i,
+    random:Math.random()
+  })
+}
+db.stus.insert(arr)
+```
+
+### 查看索引
+
+```
+db.COLLECTION_NAME.getIndexes()
+```
+
+### 删除索引
+
+```
+db.COLLECTION_NAME.dropIndex('INDEX_NAME')
+
+# INDEX_NAME:索引名称
+```
+
+### 创建匿名索引
+
+```
+db.stus.ensureIndex({age:1})
+# 1为升序
+# -1为降序
+
+修改默认索引名称为nameIndex
+db.stus.ensureIndex({age:1},{name:'ageIndex'})
+```
+
+### unique 唯一索引
+
+```
+# 设置唯一索引的字段，不能重复
+db.ids.ensureIndex({id:1},{unique:true})
+```
+
+### 过期索引
+
+过期后数据自动清除
+删除时间不精确，每60秒查询一次，删除也需要时间，所有有误差
+
+```
+# 必须是日期才可以
+db.logs.ensureIndex({time:1},{expireAfterSeconds:10})
+```
+
+### text 全文索引
+
+```
+# 原始数据
+{ "content" : "i am a boy" }
+{ "content" : "i am a girl" }
+{ "content" : "i am a boy girl" }
+{ "content" : "i am a boygirl" }
+
+# 创建索引
+db.article.ensureIndex({content:'text'})
+
+# 查询
+# 所有包含boy的数据（boygirl找不到，只能找单词）
+db.article.find({$text:{$search:'boy'}})
+{ "content" : "i am a boy" }
+{ "content" : "i am a boy girl" }
+
+# 既包含boy又包含girl
+db.article.find({$text:{$search:'boy girl'}})
+{ "content" : "i am a boy" }
+{ "content" : "i am a boy girl" }
+{ "content" : "i am a girl" }
+
+# 只包含boy不包含girl
+db.article.find({$text:{$search:'boy -gril'}})
+{ "content" : "i am a boy" }
+{ "content" : "i am a boy girl" }
+```
+
+## Mongoose
+
+### 安装mongoose
+
+``` bash
+yarn add mongoose
+```
+
+### 使用mongoose
+
+``` js
+const mongoose = require("mongoose");
+const conn = mongoose.createConnection("mongodb://user:pass@ip:port/database");
+
+// 实例
+const conn = mongoose.createConnection("mongodb://127.0.0.1:27017/zfpx");
+// 连接失败
+conn.on("err", function(err) {
+  console.log("err:", err);
+});
+
+// 连接成功
+conn.on("open", function() {
+  console.log("start");
+});
+
+// user 用户名 没有设置可以不写
+// pass 密码 没有设置可以不写
+// ip IP地址
+// port 端口号 没有设置可以不写，走默认端口27017
+// database 数据库
+```
+
+### Schema 模型
+
+Schema是数据库集合的骨架模型，定义了集合中的字段的名称和类型以及默认值等信息
+
+### Schema.Type
+
+NodeJS中的基本数据类型都属于Schema.Type，另外Mongoose还定义了自己的类型，基本属性类型有：
+
+* 字符串(String)
+* 日期型(Date)
+* 数值型(Number)
+* 布尔型(Boolean)
+* null
+* 数组
+* 内嵌文档(JSON)
+
+### 定义Schema
+
+``` js
+const Schema = mongoose.Schema;
+const PersonSchema = new Schema({
+  name: String, //姓名
+  binary: Buffer, //二进制
+  living: Boolean, //是否活着
+  birthday: Date, //生日
+  age: Number, //生日
+  _id: Schema.Types.ObjectId, //主键
+  _fk: Schema.Types.ObjectId, //外键,其他关联表的主键
+  array: [], //数组
+  arrOfString: [String], //字符串数组
+  arrOfNumber: [Number], //数字数组
+  arrOfDate: [Date], //日期数组
+  arrOfBuffer: [Buffer], //二进制数组
+  arrOfBoolean: [Boolean], //布尔值数组
+  arrOfObjectId: [Schema.Types.ObjectId], //对象ID数组
+  nested: {
+    // 内嵌文档
+    name: String
+  }
+});
+```
+
+### Model
+
+Model是由通过Schema构造而成，除了具有Schema定义的数据库骨架以外，还可以操作数据库
+
+``` js
+const Person = mongoose.model("Person", PersonSchema);
+
+const data = {
+  name: "zfpx",
+  age: 9,
+  home: "beijing"
+};
+
+const person = new Person(data);
+
+person.save((err, doc) => {
+  console.log(err); // err = null 表示没有错误
+  console.log(doc); // doc = 保存成功后的文档
+});
+```
+
+### 基础操作
+
+#### 插入数据
+
+``` js
+const persons = [];
+for (let i = 0; i < 10; i++) {
+  persons.push({
+    name: "zfpx" + i,
+    age: i
+  });
+}
+Person.create(persons, function(err, docs) {
+  console.log(err);
+  console.log(docs);
+});
+```
+
+#### 关联查询
+
+``` js
+Student.create({ name: "zfpx" })
+  .then(student => {
+    Score.create({
+      stuid: student._id,
+      grade: 100
+    });
+  })
+
+Score.findById("5d39870a09af1ef81996993d")
+  .populate("stuid")
+  .exec()
+  .then(res => {
+    console.log(res);
+  });
 ```
