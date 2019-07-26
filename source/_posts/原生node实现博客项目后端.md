@@ -3,3 +3,237 @@ title: 原生实现博客项目后端
 date: 2019-07-25 19:11:13
 tags:
 ---
+
+## 处理GET请求
+
+``` js
+const http = require("http");
+const querystring = require("querystring");
+
+const server = http.createServer((req, res) => {
+  const url = req.url;
+  req.query = querystring.parse(url.split("?")[1]);
+  res.end(`hello world query:${JSON.stringify(req.query)}`);
+});
+
+server.listen(8080, () => {
+  console.log("start server");
+});
+```
+
+## 处理POST请求
+
+``` js
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+  let rawData = "";
+  req.on("data", chunk => {
+    rawData += chunk;
+  });
+  req.on("end", () => {
+    const postData = JSON.parse(rawData);
+    res.end(`hello world postData:${JSON.stringify(postData)}`);
+  });
+});
+
+server.listen(8080, () => {
+  console.log("start server");
+});
+```
+
+## 处理GET、POST综合实例
+
+``` js
+const http = require("http");
+const querystring = require("querystring");
+
+const server = http.createServer((req, res) => {
+  const method = req.method;
+  const url = req.url;
+  const path = url.split("?")[0];
+  const query = querystring.parse(url.split("?")[1]);
+
+  // 设置返回格式为JSON
+  res.setHeader("Content-type", "application/json");
+
+  // 返回的数据
+  const resData = {
+    method,
+    url,
+    path,
+    query
+  };
+
+  // 返回
+  if (method === "GET") {
+    res.end(JSON.stringify(resData));
+  } else if (method === "POST") {
+    let rawData = "";
+    req.on("data", chunk => (rawData += chunk));
+    req.on("end", () => {
+      resData.postData = JSON.parse(rawData);
+      res.end(JSON.stringify(resData));
+    });
+  }
+});
+
+server.listen(8080, () => {
+  console.log("start server");
+});
+```
+
+## 搭建开发环境
+
+* 从0开始，不使用任何框架
+* 使用 `nodemon` 检测文件变化，自动重启 node
+* 使用 `cross-env` 设置环境变量，兼容 mac linxu、windows
+
+1. 安装 nodemon cross-env
+
+``` bash
+yarn add nodemon cross-env
+```
+
+2. 创建app.js
+
+``` js
+const serverHandle = (req, res) => {
+  // 设置返回格式 JSON
+  res.setHeader("Content-type", "application/json");
+
+  const resData = {
+    name: "amyas",
+    env: process.env.NODE_ENV
+  };
+
+  res.end(JSON.stringify(resData));
+};
+
+module.exports = serverHandle;
+```
+
+3. 创建bin/www.js
+
+``` js
+const http = require("http");
+
+const PORT = 8080;
+const serverHandle = require("../app");
+
+const server = http.createServer(serverHandle);
+server.listen(PORT, () => {
+  console.log("server port: ", PORT);
+});
+```
+
+4. 修改pacjage.json
+
+``` json
+"scripts": {
+  "dev": "cross-env NODE_ENV=development nodemon ./bin/www.js",
+  "pord": "cross-env NODE_ENV=production nodemon ./bin/www.js"
+}
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/c7911eab28284d59083ea4a432dd457ca93de0ad)
+
+> git 提交中 app.js 中 process 有错误，错误内容为 `ProcessingInstruction`，正确内容应为 `process`
+
+## 初始化路由
+
+路由目录:
+
+|描述|接口|方法|URL参数|
+|---|---|---|---|
+|获取博客列表 |/api/blog/list     |GET    |`author` 作者，`keyword` 搜索关键字|
+|获取博客详情 |/api/blog/detail   |GET    |id |
+|新增博客     |/api/blog/new      |POST   | |
+|更新博客     |/api/blog/update   |POST   | |
+|删除博客     |/api/blog/del      |POST   |id|
+|登录         |/api/user/login   |POST    | |
+
+1. 创建博客相关路由
+
+``` js
+// /src/router/blog.js
+module.exports = (req, res) => {
+  const method = req.method;
+  const path = req.path;
+
+  if (method === "GET") {
+    switch (path) {
+      case "/api/blog/list":
+        return { msg: "获取博客列表" };
+      case "/api/blog/detail":
+        return { msg: "获取博客详情" };
+      default:
+        break;
+    }
+  }
+
+  if (method === "POST") {
+    switch (path) {
+      case "/api/blog/new":
+        return { msg: "新增博客" };
+      case "/api/blog/update":
+        return { msg: "更新博客" };
+      case "/api/blog/del":
+        return { msg: "删除博客" };
+      default:
+        break;
+    }
+  }
+};
+```
+
+2. 创建登录路由
+
+``` js
+// /src/router/user.js
+module.exports = (req, res) => {
+  const method = req.method;
+  const path = req.path;
+
+  if (method === "POST" && path === "/api/user/login") {
+    return { msg: "获取博客列表" };
+  }
+};
+```
+
+3. 修改 app.js，获取路由相关内容
+
+``` js
+// /app.js
+const handleBlogRouter = require("./src/router/blog");
+const handleUserRouter = require("./src/router/user");
+
+const serverHandle = (req, res) => {
+  // 设置返回格式 JSON
+  res.setHeader("Content-type", "application/json");
+
+  const url = req.url;
+  req.path = url.split("?")[0];
+
+  const blogData = handleBlogRouter(req, res);
+  if (blogData) {
+    res.end(JSON.stringify(blogData));
+    return;
+  }
+
+  const userData = handleUserRouter(req, res);
+  if (userData) {
+    res.end(JSON.stringify(userData));
+    return;
+  }
+
+  // 未命中路由，返回 404
+  res.writeHead(404, { "Content-type": "text/plain" });
+  res.write("404 Not Fount\n");
+  res.end();
+};
+
+module.exports = serverHandle;
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d6c8e103f90caa53b3878eeaa6842cdf44d4149a)
