@@ -347,3 +347,37 @@ module.exports = (req, res) => {
   }
   ...
 ```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/73c618e84c810032369c76928a1d36dac5353be4)
+
+
+## 开发路由（博客详情路由）
+
+1. 在controller的blog.js中添加获取详情的假数据
+
+``` js
+exports.getDetail = id => {
+  // 先返回假数据
+  return {
+    id: 1,
+    title: "标题A",
+    content: "内容A",
+    createTime: 1564129277991,
+    author: "作者A"
+  };
+};
+```
+
+2. 修改router中的blog.js，改为调用controller中的方法获取数据
+
+``` js
+module.exports = (req, res) => {
+...
+  case "/api/blog/detail":
+    const id = req.query.id;
+    const data = getDetail(id);
+    return new SuccessModel(data);
+...
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/1edc5cd6c7542f4f943e90df76818490d9b6033f)
