@@ -424,3 +424,32 @@ const serverHandle = async (req, res) => {
 ```
 
 ### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/8d59786e687df8fcd0a48e818b43928f7803baa2)
+
+## 开发路由（新建和更新博客路由）
+
+### 新建博客
+
+1. controller 中的 blog.js 中添加 createBlog 方法
+
+``` js
+// controller/blog.js
+exports.createBlog = (data = {}) => {
+  // data是一个博客对象，包含 titlle content
+  return {
+    id: 3
+  };
+};
+```
+
+2. 修改 router 中的 blog.js 获取数据的方法
+
+``` js
+// router/blog.js
+...
+case "/api/blog/new":
+  const data = createBlog(req.body);
+  return new SuccessModel(data);
+...
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/47ac54a3777294e6bfd749af4ba56610814165bc)
