@@ -502,3 +502,35 @@ case "/api/blog/del":
 ```
 
 ### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/3053cafbfb54447d27cb321b3b10df37c5430234)
+
+## 登录
+
+``` js
+// controller/user.js
+exports.login = (username, password) => {
+  if (username === "zhangsan" && password === "123") {
+    return true;
+  }
+  return false;
+};
+```
+
+``` js
+// router/user.js
+const { login } = require("../controller/user");
+const { SuccessModel, ErrorModel } = require("../model/resModel");
+
+module.exports = (req, res) => {
+  const method = req.method;
+  const path = req.path;
+
+  if (method === "POST" && path === "/api/user/login") {
+    const { username, password } = req.body;
+    const result = login(username, password);
+    if (result) {
+      return new SuccessModel();
+    }
+    return new ErrorModel("登录失败");
+  }
+};
+```
