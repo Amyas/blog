@@ -453,3 +453,28 @@ case "/api/blog/new":
 ```
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/47ac54a3777294e6bfd749af4ba56610814165bc)
+
+### 更新博客
+
+``` js
+// controller/blog.js
+exports.updateBlog = (id, data = {}) => {
+  return true;
+};
+```
+
+``` js
+// router/blog.js
+...
+case "/api/blog/update":
+  const id = req.query.id;
+  const result = updateBlog(id, req.body);
+  if (result) {
+    return new SuccessModel();
+  } else {
+    return new ErrorModel("更新博客失败");
+  }
+...
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/828040f9938f3b1d40f6150cb115fd88834fa884)
