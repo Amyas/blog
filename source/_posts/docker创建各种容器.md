@@ -11,6 +11,7 @@ tags:
 docker run -d --name mysql \
   -e MYSQL_ROOT_PASSWORD=root \
   -e MYSQL_DATABASE=study \
+  -p 3306:3306 \
   -v /Users/amyas/mysql_data:/var/lib/mysql \
 mysql:5.5
 ```
