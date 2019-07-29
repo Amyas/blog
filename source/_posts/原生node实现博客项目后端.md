@@ -237,3 +237,113 @@ module.exports = serverHandle;
 ```
 
 ### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d6c8e103f90caa53b3878eeaa6842cdf44d4149a)
+
+## 开发路由（博客列表路由）
+
+1. 修改app.js，解析 query
+
+``` js
+// app.js
+const querystring = require("querystring");
+const serverHandle = (req, res) => {
+  // 解析 query
+  req.query = querystring.parse(url.split("?")[1]);
+
+...
+```
+
+2. 创建controller文件夹，新建blog.js
+
+controller主要实现获取数据操作
+
+``` js
+// controller/blog.js
+exports.getList = (author, keyword) => {
+  // 先返回假数据（格式是正确的）
+  return [
+    {
+      id: 1,
+      title: "标题A",
+      content: "内容A",
+      createTime: 1564129277991,
+      author: "作者A"
+    },
+    {
+      id: 1,
+      title: "标题B",
+      content: "内容B",
+      createTime: 1564129278991,
+      author: "作者B"
+    }
+  ];
+};
+```
+
+3. 新增response返回模块
+
+该模块主要实现返回数据的格式
+
+``` js
+// model/resModel.js
+class BaseModel {
+  constructor(data, message) {
+    if (typeof data === "string") {
+      this.message = data;
+      data = null;
+      message = null;
+    }
+    if (data) {
+      this.data = data;
+    }
+    if (message) {
+      this.message = message;
+    }
+  }
+}
+
+class SuccessModel extends BaseModel {
+  constructor(data, message) {
+    super(data, message);
+    this.errno = 0;
+  }
+}
+
+class ErrorModel extends BaseModel {
+  constructor(data, message) {
+    super(data, message);
+    this.errno = -1;
+  }
+}
+
+module.exports = {
+  SuccessModel,
+  ErrorModel
+};
+```
+
+4. 修改blog路由页
+
+``` js
+const { getList } = require("../controller/blog");
+const { SuccessModel, ErrorModel } = require("../model/resModel");
+
+module.exports = (req, res) => {
+  const method = req.method;
+  const path = req.path;
+
+  if (method === "GET") {
+    switch (path) {
+      case "/api/blog/list":
+        const author = req.query.author || "";
+        const keyword = req.query.keyword || "";
+        const listData = getList(author, keyword);
+        return new SuccessModel(listData);
+
+      case "/api/blog/detail":
+        return { msg: "获取博客详情" };
+      default:
+        break;
+    }
+  }
+  ...
+```
