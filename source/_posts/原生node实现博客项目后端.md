@@ -381,3 +381,46 @@ module.exports = (req, res) => {
 ```
 
 ### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/1edc5cd6c7542f4f943e90df76818490d9b6033f)
+
+## 开发路由（处理POST Data）
+
+新增处理post data 方法
+
+``` js
+// app.js
+const getPostData = req => {
+  return new Promise((resolve, reject) => {
+    if (req.method !== "POST") {
+      resolve({});
+      return;
+    }
+    if (req.headers["content-type"] !== "application/json") {
+      resolve({});
+      return;
+    }
+    let postData = "";
+    req.on("data", chunk => {
+      postData += chunk.toString();
+    });
+    req.on("end", () => {
+      if (!postData) {
+        resolve({});
+        return;
+      }
+      resolve(JSON.parse(postData));
+    });
+  });
+};
+
+const serverHandle = async (req, res) => {
+  ...
+  // 解析 query
+  req.query = querystring.parse(url.split("?")[1]);
+
+  // 处理 post data
+  const postData = await getPostData(req);
+  req.body = postData;
+  ...
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/8d59786e687df8fcd0a48e818b43928f7803baa2)
