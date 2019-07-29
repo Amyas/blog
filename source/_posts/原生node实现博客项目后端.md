@@ -478,3 +478,27 @@ case "/api/blog/update":
 ```
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/828040f9938f3b1d40f6150cb115fd88834fa884)
+
+## 开发路由（删除博客和登录路由）
+
+### 删除博客
+
+``` js
+// controller/blog.js
+exports.removeBlog = id => {
+  return true;
+};
+```
+
+``` js
+// router/blog.js
+case "/api/blog/del":
+  const delResult = removeBlog(req.query.id);
+  if (delResult) {
+    return new SuccessModel();
+  } else {
+    return new ErrorModel("删除博客失败");
+  }
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/3053cafbfb54447d27cb321b3b10df37c5430234)
