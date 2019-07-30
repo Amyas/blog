@@ -4,6 +4,8 @@ date: 2019-07-25 19:11:13
 tags:
 ---
 
+# 开发博客项目之接口
+
 ## 处理GET请求
 
 ``` js
@@ -536,3 +538,27 @@ module.exports = (req, res) => {
 ```
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/64a67842675ec09b7a13c2b8766a6b9a800af2bf)
+
+# 开发博客项目之数据存储
+
+## 数据库操作（创建和增、删、查）
+
+## 数据库操作（更新）
+
+## nodejs操作mysql
+
+## nodejs链接mysql做成工具
+
+## API对接mysql（博客列表）
+
+## API对接mysql（博客详情和新建）
+
+## API对接mysql（博客更新和删除）
+
+## API对接mysql（登录）
+
+# 博客项目之登录
+
+# 博客项目之日志
+
+# 博客项目之安全
