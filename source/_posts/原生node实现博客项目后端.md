@@ -656,9 +656,36 @@ SELECT * FROM blogs WHERE author = 'lisi' ORDER BY createtime DESC;
 SELECT * FROM blogs WHERE title LIKE '%文章标题%' ORDER BY createtime DESC;
 ```
 
-## 数据库操作（更新）
+## nodejs操作mysql（演示Demo）
 
-## nodejs操作mysql
+``` js
+const mysql = require("mysql");
+
+// 创建连接对象
+const conn = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  port: "3306",
+  database: "myblog"
+});
+
+// 开始连接
+conn.connect();
+
+// 执行 sql 语句
+const sql = "select * from users;";
+conn.query(sql, (err, result) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log(result);
+});
+
+// 关闭连接
+conn.end();
+```
 
 ## nodejs链接mysql做成工具
 
