@@ -5,8 +5,7 @@ tags:
   docker
 ---
 
-## 创建Mysql容器
-$ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag 
+## Mysql
 
 ``` bash
 docker run -d --name mysql \
@@ -20,4 +19,17 @@ mysql:5.5 \
 ```
 > * MYSQL_ROOT_PASSWORD：mysql密码
 > * MYSQL_DATABASE：指定数据库
-> * character-set-server=utf8mb4、collation-server=utf8mb4_unicode_ci：指定字符集
+> * --character-set-server=utf8mb4：指定字符集
+> * --collation-server=utf8mb4_unicode_ci：指定字符集
+
+## Redis
+
+``` bash
+docker run -d --name redis \
+  -p 6379:6379 \
+  -v /Users/amyas/redis_data:/data \
+redis \
+redis-server --appendonly yes
+```
+
+> * redis-server --appendonly yes：redis 持久化配置
