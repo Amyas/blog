@@ -755,13 +755,168 @@ module.exports = {
 };
 ```
 
-## API对接mysql（博客列表）
+## API对接mysql（博客列表、增，删，改，查，登录）
 
-## API对接mysql（博客详情和新建）
+``` js
+// controller/blog.js
+const { exec } = require("../db/mysql");
 
-## API对接mysql（博客更新和删除）
+exports.getList = (author, keyword) => {
+  // 1=1 占位置，避免后续 and 或者 order by 拼接错误
+  let sql = `select * from blogs where 1=1`;
+  if (author) {
+    sql += ` and author='${author}'`;
+  }
+  if (keyword) {
+    sql += ` and title like '%${keyword}%'`;
+  }
+  sql += ` order by createtime desc;`;
 
-## API对接mysql（登录）
+  return exec(sql);
+};
+
+exports.getDetail = id => {
+  let sql = `select * from blogs where id='${id}'`;
+  return exec(sql).then(rows => {
+    return rows[0];
+  });
+};
+
+exports.createBlog = (data = {}) => {
+  const { title, content, author } = data;
+  const createtime = Date.now();
+
+  let sql = `
+    insert into blogs (title, content, createtime, author)
+    values ('${title}', '${content}', ${createtime}, '${author}');
+  `;
+
+  return exec(sql).then(data => {
+    return {
+      id: data.insertId
+    };
+  });
+};
+
+exports.updateBlog = (id, data = {}) => {
+  const { title, content } = data;
+  let sql = `update blogs set title = '${title}', content = '${content}' where id = '${id}';`;
+  return exec(sql).then(data => {
+    if (data.affectedRows > 0) {
+      return true;
+    }
+    return false;
+  });
+};
+
+exports.removeBlog = (id, author) => {
+  let sql = `delete from blogs where id='${id}' and author = '${author}';`;
+  return exec(sql).then(data => {
+    if (data.affectedRows > 0) {
+      return true;
+    }
+    return false;
+  });
+};
+```
+
+``` js
+// router/blog.js
+module.exports = (req, res) => {
+  const method = req.method;
+  const path = req.path;
+
+  if (method === "GET" && path === "/api/blog/list") {
+    const author = req.query.author || "";
+    const keyword = req.query.keyword || "";
+    return getList(author, keyword).then(data => {
+      return new SuccessModel(data);
+    });
+  }
+
+  if (method === "GET" && path === "/api/blog/detail") {
+    const id = req.query.id;
+    return getDetail(id).then(data => {
+      return new SuccessModel(data);
+    });
+  }
+
+  if (method === "POST" && path === "/api/blog/new") {
+    return createBlog(req.body).then(data => {
+      return new SuccessModel(data);
+    });
+  }
+
+  if (method === "POST" && path === "/api/blog/update") {
+    return updateBlog(req.query.id, req.body).then(data => {
+      if (data) {
+        return new SuccessModel("更新成功");
+      }
+      return new ErrorModel("更新失败");
+    });
+  }
+
+  if (method === "POST" && path === "/api/blog/del") {
+    return removeBlog(req.query.id, req.query.author).then(data => {
+      if (data) {
+        return new SuccessModel("删除成功");
+      }
+      return new ErrorModel("删除失败");
+    });
+  }
+};
+```
+
+``` js
+// controller/user.js
+const { exec } = require("../db/mysql");
+
+exports.login = (username, password) => {
+  const sql = `
+    select username, realname from users where username='${username}' and password='${password}';
+  `;
+  return exec(sql).then(data => data[0] || {});
+};
+```
+
+``` js
+// router/user.js
+module.exports = (req, res) => {
+  const method = req.method;
+  const path = req.path;
+
+  if (method === "POST" && path === "/api/user/login") {
+    const { username, password } = req.body;
+    return login(username, password).then(data => {
+      if (data.username) {
+        return new SuccessModel(data);
+      }
+      return new ErrorModel("登录失败");
+    });
+  }
+};
+```
+
+``` js
+// app.js
+...
+const blogResult = handleBlogRouter(req, res);
+if (blogResult) {
+  blogResult.then(data => {
+    res.end(JSON.stringify(data));
+  });
+  return;
+}
+
+const userRusult = handleUserRouter(req, res);
+if (userRusult) {
+  userRusult.then(data => {
+    res.end(JSON.stringify(data));
+  });
+  return;
+}
+...
+```
 
 # 博客项目之登录
 
