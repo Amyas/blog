@@ -687,7 +687,73 @@ conn.query(sql, (err, result) => {
 conn.end();
 ```
 
-## nodejs链接mysql做成工具
+## nodejs 封装 mysql
+
+安装 mysql 依赖
+
+``` bash
+yarn add mysql
+```
+
+``` js
+// conf/db.js
+const env = process.env.NODE_ENV; // 环境变量
+
+let MYSQL_CONF;
+
+if (env === "development") {
+  MYSQL_CONF = {
+    host: "localhost",
+    user: "root",
+    password: "root",
+    port: "3306",
+    database: "myblog"
+  };
+}
+
+if (env === "production") {
+  MYSQL_CONF = {
+    host: "localhost",
+    user: "root",
+    password: "root",
+    port: "3306",
+    database: "myblog"
+  };
+}
+
+module.exports = {
+  MYSQL_CONF
+};
+```
+
+``` js
+// db/mysql.js
+const mysql = require("mysql");
+const { MYSQL_CONF } = require("../conf/db");
+
+// 创建链接对象
+const con = mysql.createConnection(MYSQL_CONF);
+
+// 开始连接
+con.connect();
+
+// 执行 sql 函数
+function exec(sql) {
+  return new Promise((resolve, reject) => {
+    con.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(result);
+    });
+  });
+}
+
+module.exports = {
+  exec
+};
+```
 
 ## API对接mysql（博客列表）
 
