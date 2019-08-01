@@ -755,6 +755,8 @@ module.exports = {
 };
 ```
 
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/90bd56cbab303fecd87f7572dc6a9ecb934234d7)
+
 ## API对接mysql（博客列表、增，删，改，查，登录）
 
 ``` js
@@ -917,6 +919,9 @@ if (userRusult) {
 }
 ...
 ```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/c3f7b0ac0e6b44dfec5ac8bc900f7e3e2d467c90)
+
 
 # 博客项目之登录
 
@@ -1111,6 +1116,8 @@ module.exports = (req, res) => {
 };
 ```
 
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/84d80b64f90d42249dcdec7c03acb316745cf044)
+
 ## 统一的登录验证
 
 ``` js
@@ -1153,6 +1160,96 @@ const loginCheck = req => {
     ...
   }
 ```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/e72ef250f6407d73afb57b7ef8821da93760f2dc)
+
+
+## 前后端联调
+
+### 后端修改
+
+axios传的content-type和直接浏览器请求有差异，所有优化getPostData
+
+``` js
+// app.js
+...
+const getPostData = req => {
+  return new Promise((resolve, reject) => {
+    ...
+    const contentType = req.headers["content-type"].toLowerCase();
+    if (contentType.indexOf("application/json") === -1) {
+      resolve({});
+      return;
+    }
+    ...
+  });
+};
+...
+```
+
+前后端端口都使用8080会冲突，所以这里将后端端口改为8081
+
+``` js
+// bin/www.js
+const PORT = 8081;
+```
+
+管理员列表校验登录和只返回属于自己的文章
+
+``` js
+// router/blog.js
+...
+if (method === "GET" && path === "/api/blog/list") {
+  let author = req.query.author || "";
+  const keyword = req.query.keyword || "";
+  if (req.query.isadmin) {
+    // 管理员界面
+    const loginCheckResult = loginCheck(req);
+    if (loginCheckResult) {
+      // 未登录
+      return loginCheckResult;
+    }
+    // 强制查询自己的博客
+    author = req.session.username;
+  }
+  return getList(author, keyword).then(data => {
+    return new SuccessModel(data);
+  });
+}
+...
+```
+
+更新文章时，只可以更新自己的文章
+
+``` js
+// router/blog.js
+if (method === "POST" && path === "/api/blog/update") {
+  ...
+  req.body.author = req.session.username;
+  return updateBlog(req.query.id, req.body).then(data => {
+  ...
+}
+```
+
+``` js
+// controller/blog.js
+...
+exports.updateBlog = (id, data = {}) => {
+  const { title, content, author } = data;
+  let sql = `update blogs set title = '${title}', content = '${content}' where id = '${id}' and author = '${author';`;
+  ...
+};
+...
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/33f30b0068057925045da61396765a86cbacb07b)
+
+
+### 前端新增
+
+内容较多且简单，直接看git吧
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/67237dd88b8e21a45672fdce5e2289bb3f327d4d)
 
 # 博客项目之日志
 
