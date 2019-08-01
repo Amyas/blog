@@ -1111,6 +1111,49 @@ module.exports = (req, res) => {
 };
 ```
 
+## 统一的登录验证
+
+``` js
+// router/blog.js
+
+...
+// 统一的登录验证函数
+const loginCheck = req => {
+  if (!req.session.username) {
+    return Promise.resolve(new ErrorModel("尚未登录"));
+  }
+};
+...
+  if (method === "POST" && path === "/api/blog/new") {
+    const loginCheckResult = loginCheck(req);
+    if (loginCheckResult) {
+      // 未登录
+      return loginCheckResult;
+    }
+    req.body.author = req.session.username;
+    ...
+  }
+
+  if (method === "POST" && path === "/api/blog/update") {
+    const loginCheckResult = loginCheck(req);
+    if (loginCheckResult) {
+      // 未登录
+      return loginCheck;
+    }
+    ...
+  }
+
+  if (method === "POST" && path === "/api/blog/del") {
+    const loginCheckResult = loginCheck(req);
+    if (loginCheckResult) {
+      // 未登录
+      return loginCheck;
+    }
+    req.query.author = req.session.username;
+    ...
+  }
+```
+
 # 博客项目之日志
 
 日志记录和日志分析是 server 端的重要模块，前端涉及较少。本章主要讲解如何使用原生 nodejs 实现日志记录、日志内容分析和日志文件拆分。其中包括 stream readline 和 crontab 等核心知识点。
