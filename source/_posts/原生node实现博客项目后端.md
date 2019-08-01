@@ -1397,7 +1397,7 @@ rl.on("close", () => {
 
 # 博客项目之安全
 
-安全是 server 端需要考虑的重点内容，本章主要讲解 nodejs 如何防范 sql 注入，xss 攻击，以及数据库的密码加密 —— 以防被黑客获取明文密码。
+安全是 server 端需要考虑的重点内容，本章主要讲解 nodejs 如何防范 sql 注入
 
 ## sql 注入
 
@@ -1435,5 +1435,3 @@ select username, realname from users where username='lizi\' -- `' and password='
 ```
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6813c179fc2f393ab3bb4f85d79e72d52f464573)
-
-## xss 攻击
