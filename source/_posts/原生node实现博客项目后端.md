@@ -1343,10 +1343,57 @@ const serverHandle = async (req, res) => {
   ...
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24f33783be1a6d4d23f85c8e3e6575de2d2543c7)
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24f33783be1a6d4d23f85c8e3e6575de2d2543c7)
 
+### 日志拆分
 
+使用 crontab 定时拆分日志
 
+``` sh
+#!/bin/sh
+cd /Users/amyas/amyas/project/node_web_server/node/logs
+cp access.log $(date +%Y-%m-%d).access.log
+echo "" > access.log
+```
+
+### 分析日志
+
+``` js
+// utils/readline.js
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
+
+// 文件地址
+const fileName = path.join(__dirname, "../../logs", "access.log");
+
+// 创建 read stream
+const readStream = fs.createReadStream(fileName);
+
+// 创建 readline 对象
+const rl = readline.createInterface({
+  input: readStream
+});
+
+// 逐行读取
+rl.on("line", lineData => {
+  if (!lineData) {
+    return;
+  }
+
+  const [method, url, userAgent, date] = lineData.split(" -- ");
+  console.log("method:", method);
+  console.log("url:", url);
+  console.log("userAgent", userAgent);
+  console.log("date", new Date(+date).toString());
+});
+
+rl.on("close", () => {
+  console.log("读取完成");
+});
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/fa8d12b6692fbce9333add7b62c55b7489d8d7c6)
 
 # 博客项目之安全
 
