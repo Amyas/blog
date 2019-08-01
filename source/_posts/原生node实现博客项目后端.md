@@ -1255,6 +1255,96 @@ exports.updateBlog = (id, data = {}) => {
 
 日志记录和日志分析是 server 端的重要模块，前端涉及较少。本章主要讲解如何使用原生 nodejs 实现日志记录、日志内容分析和日志文件拆分。其中包括 stream readline 和 crontab 等核心知识点。
 
+## node 文件操作
+
+``` js
+const fs = require("fs");
+const path = require("path");
+
+const filename = path.resolve(__dirname, "data.txt");
+
+// 读取文件内容
+fs.readFile(filename, (err, data) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+  // 默认 data 为二进制buffer，需要转换成字符串
+  console.log(data.toString());
+});
+
+// 写入文件
+const content = "这是新写入的内容\n";
+const option = {
+  flag: "a" //a = append 追加写入，覆盖写入用 'w' write
+};
+fs.writeFile(filename, content, option, err => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+});
+
+// 判断文件是否存在
+fs.exists(filename, exist => {
+  console.log(exist);
+});
+```
+
+## stream
+
+### 写入访问日志
+
+封装写日志方法
+
+``` js
+// utils/log.js
+const fs = require("fs");
+const path = require("path");
+
+// 生成 write Stream
+function createWriteStream(filename) {
+  const fullFileName = path.join(__dirname, "../../logs", filename);
+  const writeStream = fs.createWriteStream(fullFileName, {
+    flags: "a"
+  });
+  return writeStream;
+}
+
+// 写访问日志
+const accessWriteStream = createWriteStream("access.log");
+function access(log) {
+  if (process.env.NODE_ENV === "production") {
+    accessWriteStream.write(log + "\n");
+    return;
+  }
+  console.log(log);
+}
+
+module.exports = {
+  access
+};
+```
+
+调用写日志方法
+
+``` js
+// app.js
+const { access } = require("./src/utils/log");
+...
+const serverHandle = async (req, res) => {
+  // 记录 access log
+  access(
+    `${req.method} -- ${req.url} -- ${
+      req.headers["user-agent"]
+    } -- ${Date.now()}`
+  );
+  ...
+```
+
+
+
 # 博客项目之安全
 
 安全是 server 端需要考虑的重点内容，本章主要讲解 nodejs 如何防范 sql 注入，xss 攻击，以及数据库的密码加密 —— 以防被黑客获取明文密码。
