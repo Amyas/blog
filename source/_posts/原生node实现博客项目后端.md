@@ -656,7 +656,7 @@ SELECT * FROM blogs WHERE author = 'lisi' ORDER BY createtime DESC;
 SELECT * FROM blogs WHERE title LIKE '%文章标题%' ORDER BY createtime DESC;
 ```
 
-## nodejs操作mysql（演示Demo）
+## nodejs 操作 mysql（演示Demo）
 
 ``` js
 const mysql = require("mysql");
@@ -921,6 +921,195 @@ if (userRusult) {
 # 博客项目之登录
 
 用户登录是博客项目的主要功能之一，本章主要讲解如何使用原生 nodejs 实现登录。包括 cookie session 的介绍和使用，以及为了扩展性和性能使用 redis 来存储 session 。最后，通过 nginx 配置联调环境，和前端页面联调。本章内容较多，对于前端开发人员来说，新概念也较多，是本课程学习上的挑战。...
+
+## nodejs 操作 redis （演示demo）
+
+``` js
+const redis = require("redis");
+
+// 创建客户端
+const redisClient = redis.createClient(6379, "127.0.0.1");
+
+redisClient.on("error", err => {
+  console.log(err);
+});
+
+// 测试
+redisClient.set("myname", "zhangsan", redis.print);
+redisClient.get("myname", (err, val) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log(val);
+
+  // 退出
+  redisClient.quit();
+});
+```
+
+## nodejs 将 session 存入 redis
+
+添加redis配置信息
+
+``` js
+// conf/db.js
+REIDS_CONF = {
+  host: "localhost",
+  port: 6379
+};
+```
+
+封装 redis
+
+``` js
+// db/redis.js
+const redis = require("redis");
+const { REIDS_CONF } = require("../conf/db");
+
+// 创建客户端
+const redisClient = redis.createClient(REIDS_CONF.port, REIDS_CONF.host);
+
+redisClient.on("error", err => {
+  console.log(err);
+});
+
+function set(key, val) {
+  if (typeof val === "object") {
+    val = JSON.stringify(val);
+  }
+  redisClient.set(key, val, redis.print);
+}
+
+function get(key) {
+  return new Promise((resolve, reject) => {
+    redisClient.get(key, (err, val) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (val == null) {
+        resolve(null);
+        return;
+      }
+
+      try {
+        resolve(JSON.parse(val));
+      } catch (error) {
+        resolve(val);
+      }
+      resolve(val);
+    });
+  });
+}
+
+module.exports = {
+  set,
+  get
+};
+```
+
+app.js 添加 处理 cookie 和 session 的逻辑
+
+``` js
+...
+const { get, set } = require("./src/db/redis");
+...
+
+// cookie 过期时间
+const getCookieExpires = () => {
+  const d = new Date();
+  d.setTime(d.getTime() + 24 * 60 * 60 * 1000);
+  return d.toGMTString();
+};
+
+const serverHandle = async (req, res) => {
+...
+
+  // 解析 cookie
+  req.cookie = {};
+  const cookie = req.headers.cookie || "";
+  cookie.split(";").forEach(item => {
+    if (!item) return;
+
+    const [key, val] = item.split("=");
+    req.cookie[key] = val;
+  });
+
+  // 解析 session 使用 redis
+  let needSetCookie = false;
+  let userId = req.cookie.userid;
+  if (!userId) {
+    needSetCookie = true;
+    userId = `${Date.now()}_${Math.random()}`;
+    // 初始化 redis 中的 session 值
+    set(userId, {});
+  }
+
+  // 获取 session
+  req.sessionId = userId;
+  const sessionData = await get(req.sessionId);
+  if (sessionData == null) {
+    // 初始化 redis 中的 session 值
+    set(req.sessionId, {});
+    // 设置 session
+    req.session = {};
+  } else {
+    req.session = sessionData;
+  }
+...
+
+...
+blogResult.then(data => {
+    if (needSetCookie) {
+      res.setHeader(
+        "Set-Cookie",
+        `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`
+      );
+    }
+    res.end(JSON.stringify(data));
+  });
+...
+
+...
+userRusult.then(data => {
+    if (needSetCookie) {
+      res.setHeader(
+        "Set-Cookie",
+        `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`
+      );
+    }
+    res.end(JSON.stringify(data));
+  });
+...
+```
+
+登录将用户信息同步到 redis session 中
+
+``` js
+...
+const { set, get } = require("../db/redis");
+...
+module.exports = (req, res) => {
+..
+  if (method === "GET" && path === "/api/user/login") {
+    const { username, password } = req.query;
+    return login(username, password).then(data => {
+      if (data.username) {
+        // 设置 session
+        req.session.username = data.username;
+        req.session.realname = data.realname;
+
+        // 同步 session
+        set(req.sessionId, req.session);
+
+        return new SuccessModel(data);
+      }
+      return new ErrorModel("登录失败");
+    });
+  }
+};
+```
 
 # 博客项目之日志
 
