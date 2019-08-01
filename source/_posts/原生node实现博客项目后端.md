@@ -1398,3 +1398,42 @@ rl.on("close", () => {
 # 博客项目之安全
 
 安全是 server 端需要考虑的重点内容，本章主要讲解 nodejs 如何防范 sql 注入，xss 攻击，以及数据库的密码加密 —— 以防被黑客获取明文密码。
+
+## sql 注入
+
+登录 sql 注入
+
+``` js
+select username, realname from users where username='${username}' and password='${password}';
+```
+
+> 如果 username 传入的是 `lisi' -- `，后面的 `and password...` 就会无效，攻击者不需要密码就可以登录成功，进行操作
+
+解决方案：
+  * 使用 mysql 的 escape 方法处理传入的字段
+  * 将 sql 中字段的 '' 删除
+
+``` js
+// controller/user.js
+const { exec, escape } = require("../db/mysql");
+// escape = mysql.escape
+
+exports.login = (username, password) => {
+  username = escape(username);
+  password = escape(password);
+  const sql = `
+    select username, realname from users where username=${username} and password=${password};
+  `;
+  return exec(sql).then(data => data[0] || {});
+};
+```
+
+这样如果传入 `' -- `，将会被反斜线转义
+
+``` sql
+select username, realname from users where username='lizi\' -- `' and password='1';
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6813c179fc2f393ab3bb4f85d79e72d52f464573)
+
+## xss 攻击
