@@ -1687,3 +1687,82 @@ if (process.env.NODE_ENV !== "production") {
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/db70677351ddce23e76b1d185123ef8accd90bd6)
 
 # Koa2
+
+## 安装初始化项目
+
+创建项目
+
+``` bash
+# 全局安装 koa脚手架
+sudo npm install koa-generator -g
+
+# 创建koa2项目
+koa2 koa2-blog
+
+# 安装依赖
+npm i
+
+# 安装cross-env
+npm i cross-env --save
+```
+
+添加环境变量
+
+``` 
+"scripts": {
+  "dev": "cross-env NODE_ENV=development ./node_modules/.bin/nodemon bin/www",
+  "prd": "cross-env NODE_ENV=production pm2 start bin/www",
+},
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/90742a75063f66d5bf19dedba5ec9128bbff9e18)
+
+## 初始化路由
+
+``` js
+// app.js
+const blog = require("./routes/blog");
+const user = require("./routes/user");
+app.use(blog.routes(), blog.allowedMethods());
+app.use(user.routes(), user.allowedMethods());
+```
+
+``` js
+// routes/blog.js
+const router = require("koa-router")();
+
+router.prefix("/api/blog");
+
+router.get("/list", async (ctx, next) => {
+  const query = ctx.query;
+  ctx.body = {
+    errno: 0,
+    query
+  };
+});
+
+module.exports = router;
+```
+
+``` js
+// routes/user.js
+const router = require("koa-router")();
+
+router.prefix("/api/user");
+
+router.post("/login", async (ctx, next) => {
+  const { username, password } = ctx.request.body;
+  ctx.body = {
+    errno: 0,
+    username,
+    password
+  };
+});
+
+module.exports = router;
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/abfbdcd3488091cb9643716bc362dd2b89b23bf0)
+
+
+## 
