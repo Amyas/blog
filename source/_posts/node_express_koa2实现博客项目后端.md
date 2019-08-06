@@ -4,11 +4,11 @@ date: 2019-07-25 19:11:13
 tags:
 ---
 
-# 开发博客项目之接口
+# 原生Node
 
-要开发一个博客项目的 server 端，首先要实现技术方案设计中的各个 API 。本章主要讲解如何使用原生 nodejs 处理的 http 请求，包括路由分析和数据返回，然后代码演示各个 API 的开发 。但是本章尚未连接数据库，因此 API 返回的都是假数据。...
+## 处理GET/POST请求
 
-## 处理GET请求
+### 处理GET请求
 
 ``` js
 const http = require("http");
@@ -25,7 +25,7 @@ server.listen(8080, () => {
 });
 ```
 
-## 处理POST请求
+### 处理POST请求
 
 ``` js
 const http = require("http");
@@ -46,7 +46,7 @@ server.listen(8080, () => {
 });
 ```
 
-## 处理GET、POST综合实例
+### 处理GET、POST综合实例
 
 ``` js
 const http = require("http");
@@ -140,7 +140,7 @@ server.listen(PORT, () => {
 }
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/c7911eab28284d59083ea4a432dd457ca93de0ad)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/c7911eab28284d59083ea4a432dd457ca93de0ad)
 
 > git 提交中 app.js 中 process 有错误，错误内容为 `ProcessingInstruction`，正确内容应为 `process`
 
@@ -240,7 +240,7 @@ const serverHandle = (req, res) => {
 module.exports = serverHandle;
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d6c8e103f90caa53b3878eeaa6842cdf44d4149a)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d6c8e103f90caa53b3878eeaa6842cdf44d4149a)
 
 ## 开发路由（博客列表路由）
 
@@ -352,8 +352,7 @@ module.exports = (req, res) => {
   ...
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/73c618e84c810032369c76928a1d36dac5353be4)
-
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/73c618e84c810032369c76928a1d36dac5353be4)
 
 ## 开发路由（博客详情路由）
 
@@ -384,7 +383,7 @@ module.exports = (req, res) => {
 ...
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/1edc5cd6c7542f4f943e90df76818490d9b6033f)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/1edc5cd6c7542f4f943e90df76818490d9b6033f)
 
 ## 开发路由（处理POST Data）
 
@@ -427,7 +426,7 @@ const serverHandle = async (req, res) => {
   ...
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/8d59786e687df8fcd0a48e818b43928f7803baa2)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/8d59786e687df8fcd0a48e818b43928f7803baa2)
 
 ## 开发路由（新建和更新博客路由）
 
@@ -456,7 +455,7 @@ case "/api/blog/new":
 ...
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/47ac54a3777294e6bfd749af4ba56610814165bc)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/47ac54a3777294e6bfd749af4ba56610814165bc)
 
 ### 更新博客
 
@@ -481,7 +480,7 @@ case "/api/blog/update":
 ...
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/828040f9938f3b1d40f6150cb115fd88834fa884)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/828040f9938f3b1d40f6150cb115fd88834fa884)
 
 ## 开发路由（删除博客和登录路由）
 
@@ -505,7 +504,7 @@ case "/api/blog/del":
   }
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/3053cafbfb54447d27cb321b3b10df37c5430234)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/3053cafbfb54447d27cb321b3b10df37c5430234)
 
 ### 登录
 
@@ -539,15 +538,13 @@ module.exports = (req, res) => {
 };
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/64a67842675ec09b7a13c2b8766a6b9a800af2bf)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/64a67842675ec09b7a13c2b8766a6b9a800af2bf)
 
-# 开发博客项目之数据存储
+## 开发博客项目之数据存储
 
-API 实现了，就需要连接数据库，实现真正的数据存储和查询，不再使用假数据。本章主要讲解 mysql 使用，以及用 nodejs 连接 mysql ，最后将 mysql 应用到各个已经开发完的 API 中。
+### 数据库操作（创建和增、删、改、查）
 
-## 数据库操作（创建和增、删、改、查）
-
-### 创建数据表
+#### 创建数据表
 
 ``` sql
 -- 查询字符集
@@ -579,7 +576,7 @@ CREATE TABLE `myblog`.`blogs`  (
 );
 ```
 
-### 增
+#### 增
 
 ``` sql
 -- 插入users表的数据
@@ -592,7 +589,7 @@ INSERT INTO blogs (title, content, createtime, author) VALUES('文章标题1','�
 INSERT INTO blogs (title, content, createtime, author) VALUES('文章标题2','文章内容2', 1564480963937, 'lisi');
 ```
 
-### 删
+#### 删
 
 ``` sql
 -- 如果无法更新删除，执行该命令，解除安全模式
@@ -606,7 +603,7 @@ DELETE FROM users WHERE username = 'wangwu';
 UPDATE users SET state= '0' WHERE username = 'lisi'
 ```
 
-### 改
+#### 改
 
 ``` sql
 -- 如果无法更新删除，执行该命令，解除安全模式
@@ -616,7 +613,7 @@ SET SQL_SAFE_UPDATES = 0;
 UPDATE users SET username = 'lisi' WHERE username = 'lizi';
 ```
 
-### 查
+#### 查
 
 ``` sql
 -- 查询users表下所有数据
@@ -656,7 +653,7 @@ SELECT * FROM blogs WHERE author = 'lisi' ORDER BY createtime DESC;
 SELECT * FROM blogs WHERE title LIKE '%文章标题%' ORDER BY createtime DESC;
 ```
 
-## nodejs 操作 mysql（演示Demo）
+### nodejs 操作 mysql（演示Demo）
 
 ``` js
 const mysql = require("mysql");
@@ -687,7 +684,7 @@ conn.query(sql, (err, result) => {
 conn.end();
 ```
 
-## nodejs 封装 mysql
+### nodejs 封装 mysql
 
 安装 mysql 依赖
 
@@ -755,9 +752,9 @@ module.exports = {
 };
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/90bd56cbab303fecd87f7572dc6a9ecb934234d7)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/90bd56cbab303fecd87f7572dc6a9ecb934234d7)
 
-## API对接mysql（博客列表、增，删，改，查，登录）
+### API对接mysql（博客列表、增，删，改，查，登录）
 
 ``` js
 // controller/blog.js
@@ -920,14 +917,11 @@ if (userRusult) {
 ...
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/c3f7b0ac0e6b44dfec5ac8bc900f7e3e2d467c90)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/c3f7b0ac0e6b44dfec5ac8bc900f7e3e2d467c90)
 
+## 博客项目之登录
 
-# 博客项目之登录
-
-用户登录是博客项目的主要功能之一，本章主要讲解如何使用原生 nodejs 实现登录。包括 cookie session 的介绍和使用，以及为了扩展性和性能使用 redis 来存储 session 。最后，通过 nginx 配置联调环境，和前端页面联调。本章内容较多，对于前端开发人员来说，新概念也较多，是本课程学习上的挑战。...
-
-## nodejs 操作 redis （演示demo）
+### nodejs 操作 redis （演示demo）
 
 ``` js
 const redis = require("redis");
@@ -953,7 +947,7 @@ redisClient.get("myname", (err, val) => {
 });
 ```
 
-## nodejs 将 session 存入 redis
+### nodejs 将 session 存入 redis
 
 添加redis配置信息
 
@@ -1116,9 +1110,9 @@ module.exports = (req, res) => {
 };
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/84d80b64f90d42249dcdec7c03acb316745cf044)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/84d80b64f90d42249dcdec7c03acb316745cf044)
 
-## 统一的登录验证
+### 统一的登录验证
 
 ``` js
 // router/blog.js
@@ -1161,12 +1155,11 @@ const loginCheck = req => {
   }
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/e72ef250f6407d73afb57b7ef8821da93760f2dc)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/e72ef250f6407d73afb57b7ef8821da93760f2dc)
 
+### 前后端联调
 
-## 前后端联调
-
-### 后端修改
+#### 后端修改
 
 axios传的content-type和直接浏览器请求有差异，所有优化getPostData
 
@@ -1242,20 +1235,18 @@ exports.updateBlog = (id, data = {}) => {
 ...
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/33f30b0068057925045da61396765a86cbacb07b)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/33f30b0068057925045da61396765a86cbacb07b)
 
 
-### 前端新增
+#### 前端新增
 
 内容较多且简单，直接看git吧
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/67237dd88b8e21a45672fdce5e2289bb3f327d4d)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/67237dd88b8e21a45672fdce5e2289bb3f327d4d)
 
-# 博客项目之日志
+## 博客项目之日志
 
-日志记录和日志分析是 server 端的重要模块，前端涉及较少。本章主要讲解如何使用原生 nodejs 实现日志记录、日志内容分析和日志文件拆分。其中包括 stream readline 和 crontab 等核心知识点。
-
-## node 文件操作
+### node 文件操作
 
 ``` js
 const fs = require("fs");
@@ -1292,9 +1283,7 @@ fs.exists(filename, exist => {
 });
 ```
 
-## stream
-
-### 写入访问日志
+### stream 写入访问日志
 
 封装写日志方法
 
@@ -1343,7 +1332,7 @@ const serverHandle = async (req, res) => {
   ...
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24f33783be1a6d4d23f85c8e3e6575de2d2543c7)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24f33783be1a6d4d23f85c8e3e6575de2d2543c7)
 
 ### 日志拆分
 
@@ -1393,13 +1382,11 @@ rl.on("close", () => {
 });
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/fa8d12b6692fbce9333add7b62c55b7489d8d7c6)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/fa8d12b6692fbce9333add7b62c55b7489d8d7c6)
 
-# 博客项目之安全
+## 博客项目之安全
 
-安全是 server 端需要考虑的重点内容，本章主要讲解 nodejs 如何防范 sql 注入
-
-## sql 注入
+### sql 注入
 
 登录 sql 注入
 
@@ -1434,7 +1421,7 @@ exports.login = (username, password) => {
 select username, realname from users where username='lizi\' -- `' and password='1';
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6813c179fc2f393ab3bb4f85d79e72d52f464573)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6813c179fc2f393ab3bb4f85d79e72d52f464573)
 
 # Express
 
@@ -1470,7 +1457,7 @@ yarn add nodemon cross-env --dev
 
 `yarn dev` 访问 http://localhost:8081 就可以看到项目了
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/5aaa07a7d3a9e800bfe7566a4b7767dc5549cc79)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/5aaa07a7d3a9e800bfe7566a4b7767dc5549cc79)
 
 ## express 处理路由
 
@@ -1523,7 +1510,7 @@ router.post("/login", (req, res, next) => {
 module.exports = router;
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/41e344d84ba800a3faa66316934b1fb16fb87649)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/41e344d84ba800a3faa66316934b1fb16fb87649)
 
 ## express 连接 mysql
 
@@ -1531,7 +1518,7 @@ module.exports = router;
 
 内容过多，并都是复用基础 node 的代码，所以直接看 git 吧
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ceff2de5c4cc8d47b34d185b2ceb3aaabb1d8de)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ceff2de5c4cc8d47b34d185b2ceb3aaabb1d8de)
 
 ## express 处理 session
 
@@ -1559,7 +1546,7 @@ app.use(
 );
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/a6c125a734e7e826e684774b57a15f553655bc7c)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/a6c125a734e7e826e684774b57a15f553655bc7c)
 
 ## session 连接 redis
 
@@ -1638,7 +1625,7 @@ router.post("/login", (req, res, next) => {
 module.exports = router;
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/ab6800fe965cf0cb0f5d3f55aa0889b180169bb1)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/ab6800fe965cf0cb0f5d3f55aa0889b180169bb1)
 
 ## 登录中间件
 
@@ -1655,13 +1642,13 @@ module.exports = (req, res, next) => {
 };
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24be0b8861852fd28bc9c4dacb182249f772d07c)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24be0b8861852fd28bc9c4dacb182249f772d07c)
 
 ## 开发路由
 
 基本上就是复用基础 node 项目代码，loginCheck 改用中间件
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d1e7adc881ca4e15a7da252d4e302eca74b69ef6)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d1e7adc881ca4e15a7da252d4e302eca74b69ef6)
 
 ## morgan 写日志
 
@@ -1684,7 +1671,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/db70677351ddce23e76b1d185123ef8accd90bd6)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/db70677351ddce23e76b1d185123ef8accd90bd6)
 
 # Koa2
 
@@ -1715,7 +1702,7 @@ npm i cross-env --save
 },
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/90742a75063f66d5bf19dedba5ec9128bbff9e18)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/90742a75063f66d5bf19dedba5ec9128bbff9e18)
 
 ## 初始化路由
 
@@ -1762,7 +1749,7 @@ router.post("/login", async (ctx, next) => {
 module.exports = router;
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/abfbdcd3488091cb9643716bc362dd2b89b23bf0)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/abfbdcd3488091cb9643716bc362dd2b89b23bf0)
 
 ## 实现 session
 
@@ -1824,7 +1811,7 @@ app.use(
 );
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/ca5954203378752c17aa4f26c25c8f6462753bd1)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/ca5954203378752c17aa4f26c25c8f6462753bd1)
 
 ## 开发路由
 
@@ -1853,13 +1840,13 @@ module.exports = async (req, res, next) => {
 };
 ```
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/306de8893f1e8370e1e532882af174b694ca2888)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/306de8893f1e8370e1e532882af174b694ca2888)
 
 ### 代码联调
 
 直接看代码吧
 
-#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ab4a70fb6c48b465f718db4a5393ead537b7809)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ab4a70fb6c48b465f718db4a5393ead537b7809)
 
 ## morgan 日志
 
@@ -1890,4 +1877,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 ```
 
-### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/98ce09ac0a1a963ee76fb866eed87bb0e4bd542c)
+> [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/98ce09ac0a1a963ee76fb866eed87bb0e4bd542c)
