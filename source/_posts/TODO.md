@@ -8,6 +8,7 @@ tags:
 * [x] 原生node实现博客项目后端
 * [x] express重构博客项目后端
 * [x] koa2重构实现后端项目
+* [ ] GraphQL
 * [ ] eslint
 * [ ] Redis
 * [ ] Webpack-从基础到实战学习webpack4
