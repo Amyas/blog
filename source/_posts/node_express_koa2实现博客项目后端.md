@@ -1764,5 +1764,102 @@ module.exports = router;
 
 ### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/abfbdcd3488091cb9643716bc362dd2b89b23bf0)
 
+## 实现 session
 
-## 
+安装 session 相关依赖
+
+``` bash
+npm i koa-generic-session koa-redis redis --save
+```
+
+复制之前的 redis 配置文件 conf/db.js
+
+配置 session
+
+``` js
+// app.js
+const session = require("koa-generic-session");
+const redisStore = require("koa-redis");
+const { REIDS_CONF } = require("./conf/db");
+
+const index = require("./routes/index");
+const blog = require("./routes/blog");
+const user = require("./routes/user");
+
+// error handler
+onerror(app);
+
+// middlewares
+app.use(
+  bodyparser({
+    enableTypes: ["json", "form", "text"]
+  })
+);
+app.use(json());
+app.use(logger());
+
+// logger
+app.use(async (ctx, next) => {
+  const start = new Date();
+  await next();
+  const ms = new Date() - start;
+  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+});
+
+// session 配置
+app.keys = ["amyas"];
+app.use(
+  session({
+    // 配置cookie
+    cookie: {
+      path: "/",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000
+    },
+    // 配置redis
+    store: redisStore({
+      all: `${REIDS_CONF.host}:${REIDS_CONF.port}`
+    })
+  })
+);
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/ca5954203378752c17aa4f26c25c8f6462753bd1)
+
+## 开发路由
+
+### 准备工作
+
+1. 安装 mysql
+
+2. 复用之前的 mysql 配置
+
+3. 复用之前的 controller
+
+将 controller 中的 promise 改为 async await 方式
+
+4. 中间件 loginCheck 修改
+
+``` js
+// middleware/loginCheck.js
+const { ErrorModel } = require("../model/resModel");
+
+module.exports = async (req, res, next) => {
+  if (!req.session.username) {
+    ctx.body = new ErrorModel("未登录");
+    return;
+  }
+  await next();
+};
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/306de8893f1e8370e1e532882af174b694ca2888)
+
+### 代码联调
+
+直接看代码吧
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ab4a70fb6c48b465f718db4a5393ead537b7809)
+
+
+
