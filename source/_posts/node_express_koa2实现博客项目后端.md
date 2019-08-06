@@ -1861,5 +1861,33 @@ module.exports = async (req, res, next) => {
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ab4a70fb6c48b465f718db4a5393ead537b7809)
 
+## morgan 日志
 
+安装兼容 koa2 的 morgan
 
+``` bash
+npm i koa-morgan
+```
+
+``` js
+// app.js
+const path = require("path");
+const fs = require("fs");
+const morgan = require("koa-morgan");
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+} else {
+  const logFilename = path.join(__dirname, "logs", "access.log");
+  const writeStream = fs.createWriteStream(logFilename, {
+    flags: "a"
+  });
+  app.use(
+    morgan("combined", {
+      stream: writeStream
+    })
+  );
+}
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/98ce09ac0a1a963ee76fb866eed87bb0e4bd542c)
