@@ -11,7 +11,6 @@ tags:
 * [x] Redis
 * [x] MySql
 * [ ] Webpack
-* [ ] Eslint
 * [ ] 实战之管理台
 * [ ] 实战之koa2
 * [ ] vue ssr原生搭建
@@ -26,3 +25,4 @@ tags:
 * [ ] canvas
 * [ ] nginx
 * [ ] react
+* [ ] Eslint
