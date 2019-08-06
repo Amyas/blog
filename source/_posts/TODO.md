@@ -10,14 +10,15 @@ tags:
 * [x] koa2重构实现后端项目
 * [x] Redis
 * [x] MySql
-* [ ] Webpack
-* [ ] 实战之管理台
-* [ ] 实战之koa2
-* [ ] vue ssr原生搭建
-* [ ] 实战之vue ssr
+* [ ] 实战之管理台（商城）
+* [ ] 实战之koa2（商城）
+* [ ] 实战之vue（商城）
+* [ ] vue ssr 原生学习
+* [ ] 实战之vue ssr（商城）
 * [ ] 设计模式
 * [ ] JS理论
 * [ ] HTTP理论
+* [ ] Webpack
 * [ ] Golang
 * [ ] Python
 * [ ] GraphQL
