@@ -1533,4 +1533,30 @@ module.exports = router;
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ceff2de5c4cc8d47b34d185b2ceb3aaabb1d8de)
 
+## express 处理 session
+
+安装 `express-session` 中间件
+
+``` bash
+yarn add express-session
+```
+
+处理 session
+
+``` js
+// app.js
+const session = require("express-session");
+
+app.use(
+  session({
+    secret: "amyas",
+    cookie: {
+      // path: "/", //默认配置
+      // httpOnly: true, //默认配置
+      maxAge: 24 * 60 * 60 * 1000 //24小时
+    }
+  })
+);
+```
+
 # Koa2
