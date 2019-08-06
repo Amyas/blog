@@ -1,5 +1,5 @@
 ---
-title: 原生实现博客项目后端
+title: node_express_koa2实现博客项目后端
 date: 2019-07-25 19:11:13
 tags:
 ---
@@ -1435,3 +1435,102 @@ select username, realname from users where username='lizi\' -- `' and password='
 ```
 
 #### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6813c179fc2f393ab3bb4f85d79e72d52f464573)
+
+# Express
+
+## 安装
+
+使用脚手架 `express-generator` 安装
+
+``` js
+// 全局安装脚手架
+npm install express-generator -g
+
+// 创建项目
+express blog-express
+
+// 安装依赖
+yarn
+
+// 安装 modemon cross-env
+yarn add nodemon cross-env --dev
+```
+
+修改 `package.json` 配置 nodemon 和 cross-env
+
+``` 
+"scripts": {
+  "dev": "nodemon cross-env NODE_ENV=development ./bin/www",
+  "pord": " nodemon cross-env NODE_ENV=production ./bin/www"
+}
+```
+
+修改 `/bin/www` 下的端口改为: `8081`
+
+
+`yarn dev` 访问 http://localhost:8081 就可以看到项目了
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/5aaa07a7d3a9e800bfe7566a4b7767dc5549cc79)
+
+## express 处理路由
+
+``` js
+// app.js
+const blogRouter = require("./routes/blog");
+const userRouter = require("./routes/user");
+app.use("/api/blog", blogRouter);
+app.use("/api/user", userRouter);
+```
+
+``` js
+// routes/blog.js
+const express = require("express");
+const router = express.Router();
+
+router.get("/list", (req, res, next) => {
+  res.json({
+    errno: 0,
+    data: [1, 2, 3]
+  });
+});
+
+router.get("/detail", (req, res, next) => {
+  res.json({
+    errno: 0,
+    data: "ok"
+  });
+});
+
+module.exports = router;
+```
+
+``` js
+// routes/user.js
+const express = require("express");
+const router = express.Router();
+
+router.post("/login", (req, res, next) => {
+  const { username, password } = req.body;
+  res.json({
+    errno: 0,
+    data: {
+      username,
+      password
+    }
+  });
+});
+
+module.exports = router;
+```
+
+### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/41e344d84ba800a3faa66316934b1fb16fb87649)
+
+## express 连接 mysql
+
+连接 mysql ，并实现博客列表接口
+
+内容过多，并都是复用基础 node 的代码，所以直接看 git 吧
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/6ceff2de5c4cc8d47b34d185b2ceb3aaabb1d8de)
+
+# Koa2
