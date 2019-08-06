@@ -5,9 +5,9 @@ tags:
 ---
 
 * [x] [MongoDB学习总结](http://blog.amyas.cn/2019/07/24/MongoDB%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/)
-* [ ] 原生node实现博客项目后端
-* [ ] express重构博客项目后端
-* [ ] koa2重构实现后端项目
+* [x] 原生node实现博客项目后端
+* [x] express重构博客项目后端
+* [x] koa2重构实现后端项目
 * [ ] eslint
 * [ ] Redis
 * [ ] Webpack-从基础到实战学习webpack4
