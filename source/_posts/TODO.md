@@ -8,23 +8,21 @@ tags:
 * [x] 原生node实现博客项目后端
 * [x] express重构博客项目后端
 * [x] koa2重构实现后端项目
-* [ ] GraphQL
-* [ ] eslint
-* [ ] Redis
-* [ ] Webpack-从基础到实战学习webpack4
+* [x] Redis
+* [x] MySql
+* [ ] Webpack
+* [ ] Eslint
 * [ ] 实战之管理台
 * [ ] 实战之koa2
 * [ ] vue ssr原生搭建
 * [ ] 实战之vue ssr
 * [ ] 设计模式
-* [ ] HTTP理论
 * [ ] JS理论
+* [ ] HTTP理论
+* [ ] Golang
+* [ ] Python
+* [ ] GraphQL
 * [ ] docker+k8s
-* [ ] MySql
 * [ ] canvas
 * [ ] nginx
 * [ ] react
-
-
-
-
