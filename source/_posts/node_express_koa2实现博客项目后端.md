@@ -1559,4 +1559,131 @@ app.use(
 );
 ```
 
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/a6c125a734e7e826e684774b57a15f553655bc7c)
+
+## session 连接 redis
+
+安装 `redis` 和 `connect-redis`
+
+``` bash
+yarn add redis connect-redis
+```
+
+创建 redis 连接实例
+
+``` js
+// db/redis.js
+const redis = require("redis");
+const { REIDS_CONF } = require("../conf/db");
+
+// 创建客户端
+const redisClient = redis.createClient(REIDS_CONF.port, REIDS_CONF.host);
+
+redisClient.on("error", err => {
+  console.log(err);
+});
+
+module.exports = redisClient;
+```
+
+session 连接 redis
+
+``` js
+// app.js
+const session = require("express-session");
+const RedisStore = require("connect-redis")(session);
+
+const redisClient = require("./db/redis");
+const sessionStore = new RedisStore({
+  client: redisClient
+});
+
+app.use(
+  session({
+    secret: "amyas",
+    cookie: {
+      // path: "/", //默认配置
+      // httpOnly: true, //默认配置
+      maxAge: 24 * 60 * 60 * 1000 //24小时
+    },
+    store: sessionStore
+  })
+);
+```
+
+实现登录接口
+
+``` js
+// routes/user.js
+const express = require("express");
+const router = express.Router();
+const { login } = require("../controller/user");
+const { SuccessModel, ErrorModel } = require("../model/resModel");
+
+router.post("/login", (req, res, next) => {
+  const { username, password } = req.body;
+  return login(username, password).then(data => {
+    if (data.username) {
+      // 设置 session
+      req.session.username = data.username;
+      req.session.realname = data.realname;
+
+      res.json(new SuccessModel(data));
+      return;
+    }
+    res.json(new ErrorModel("登录失败"));
+  });
+});
+
+module.exports = router;
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/ab6800fe965cf0cb0f5d3f55aa0889b180169bb1)
+
+## 登录中间件
+
+``` js
+// middleware/loginCheck.js
+const { ErrorModel } = require("../model/resModel");
+
+module.exports = (req, res, next) => {
+  if (!req.session.username) {
+    res.json(new ErrorModel("未登录"));
+    return;
+  }
+  next();
+};
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/24be0b8861852fd28bc9c4dacb182249f772d07c)
+
+## 开发路由
+
+基本上就是复用基础 node 项目代码，loginCheck 改用中间件
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/d1e7adc881ca4e15a7da252d4e302eca74b69ef6)
+
+## morgan 写日志
+
+``` js
+// app.js
+const fs = require("fs");
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(logger("dev"));
+} else {
+  const logFilename = path.join(__dirname, "logs", "access.log");
+  const writeStream = fs.createWriteStream(logFilename, {
+    flags: "a"
+  });
+  app.use(
+    logger("combined", {
+      stream: writeStream
+    })
+  );
+}
+```
+
+#### [本小节内容Git提交记录](https://github.com/Amyas/node_web_server/commit/db70677351ddce23e76b1d185123ef8accd90bd6)
+
 # Koa2
