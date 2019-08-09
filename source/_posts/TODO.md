@@ -8,8 +8,8 @@ tags:
 * [x] 原生node实现博客项目后端
 * [x] express重构博客项目后端
 * [x] koa2重构实现后端项目
-* [x] Redis
-* [x] MySql
+* [ ] Redis
+* [ ] MySql
 * [ ] 实战之管理台（商城）
 * [ ] 实战之koa2（商城）
 * [ ] 实战之vue（商城）
@@ -26,4 +26,5 @@ tags:
 * [ ] canvas
 * [ ] nginx
 * [ ] react
+* [ ] svg
 * [ ] Eslint

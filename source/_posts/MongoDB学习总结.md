@@ -7,6 +7,13 @@ tags:
 
 ## 常用操作
 
+### 登录
+
+``` bash
+use admin
+db.auth("user","pass")
+```
+
 ### 使用数据库
 
 ``` bash
