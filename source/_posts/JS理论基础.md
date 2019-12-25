@@ -213,45 +213,10 @@ var f1 = fn1()
 f1()
 ```
 
-# 页面加载
+# event-loop
 
-> * 加载资源的形式
-> * 加载一个资源的过程
-> * 浏览器渲染页面的过程
+> 事件轮询，JS 实现异步的具体解决方案
 
-## 加载资源的形式
-
-* 输入 url 加载 html
-* 加载 html 中的静态资源 link script img video mp3
-
-## 加载一个资源的过程
-
-* 浏览器根据 DNS 服务器得到域名的 IP 地址
-* 向这个 IP 的机器发送 http 请求
-* 服务器收到，处理并返回 http 请求
-* 浏览器得到返回内容
-
-## 浏览器渲染页面的过程
-
-* 根据 HTML 结构成成 DOM Tree
-* 根据 CSS 生成 CSSOM
-* 将 DOM 和 CSS 整合形成 RenderTree
-* 根据 RenderTree 开始渲染和展示
-* 遇到 script 标签，会执行并阻塞渲染
-
-## 题目
-
-### 从输入url到得到html的详细过程
-
-* 浏览器根据 DNS 服务器得到域名的 IP 地址
-* 向这个 IP 的机器发送 http 请求
-* 服务器返回，处理并返回 http 请求
-* 浏览器得到返回内容
-
-### window.onload和DOMContentLoaded的区别
-
-* window.onload: 页面全部加载完才会执行，包括图片，视频等
-* DOMContentLoaded: DOM渲染完即可执行，此时图片，视频还没加载完
-
-# 性能优化
-
+* 同步代码，直接执行
+* 异步函数先放在**异步队列**中
+* 待同步函数执行完毕，轮询执行**异步队列**的函数
