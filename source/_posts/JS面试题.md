@@ -117,4 +117,16 @@ Map 有如下方法
  * entries() 字典中所有成员的迭代器
  * forEach() 遍历字典所有成员
 
-## 
+## 实现call
+
+## 实现apply
+
+## 实现bind
+
+## 实现new
+
+## 实现深拷贝
+
+## 高阶函数
+
+## eventLoop
