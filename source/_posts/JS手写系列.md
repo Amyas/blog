@@ -29,6 +29,16 @@ function isObject(obj) {
 
 # new
 
+``` js
+function create(){
+    const obj = new Object()
+    const Con = [].shift.call(arguments)
+    obj.__proto__ = Con.prototype
+    const ret = Con.apply(obj,arguments)
+    return ret instanceof Object ? ret : obj
+}
+```
+
 # 防抖
 
 # 节流
@@ -42,3 +52,5 @@ function isObject(obj) {
 # 自动计算rem
 
 # promise
+
+# 双向绑定
