@@ -1,5 +1,5 @@
 ---
-title: mysql学习总结
+title: Mysql学习总结
 date: 2019-08-06 16:41:23
 tags:
 ---
