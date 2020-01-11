@@ -31,62 +31,6 @@ parseInt('2', 1) // NaN radix必须是2-36的整数，无法解析
 parseInt('3', 2) // NaN, 3 不是二进制
 ```
 
-## 什么是防抖和节流？有什么区别？如何实现？
-
-### 防抖
-
-> 防抖是触发高频事件后n秒后函数执行一次，如果n秒内高频事件再次被触发，则重新计算时间
-
-* 思路：
-
-> 每次触发事件时都取消之前的延时调用方法
-
-``` js
-function debounce(fn, delay = 500) {
-    let timeout = null
-    return function () {
-        clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            fn.apply(this, arguments)
-        }, delay);
-    }
-}
-function sayHi() {
-    console.log('防抖debounce')
-}
-document
-    .querySelector('input')
-    .addEventListener('input', debounce(sayHi, 1000))
-```
-
-### 节流
-
-> 节流是触发高频事件后，n秒内函数只会执行一次，会稀释函数的执行频率
-
-* 思路：
-
-> 每次触发事件时都判断当前是否有等待执行的函数
-
-``` js
-function throttle(fn, delay = 500) {
-    let canRun = true
-    return function () {
-        if (!canRun) return
-        canRun = false
-        setTimeout(() => {
-            fn.apply(this, arguments)
-            canRun = true
-        }, delay);
-    }
-}
-function sayHi() {
-    console.log('防抖debounce')
-}
-document
-    .querySelector('input')
-    .addEventListener('input', throttle(sayHi, 1000))
-```
-
 ## 介绍下 Set、Map区别
 
 Set 是一种叫做集合的数据结构，主要用于数组重组
@@ -116,13 +60,3 @@ Map 有如下方法
  * values() 字典中所有数值
  * entries() 字典中所有成员的迭代器
  * forEach() 遍历字典所有成员
-
-## 实现call
-
-## 实现apply
-
-## 实现bind
-
-## 实现new
-
-## 实现深拷贝

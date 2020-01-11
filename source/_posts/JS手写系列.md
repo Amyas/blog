@@ -41,6 +41,8 @@ function create(){
 
 # 防抖
 
+> 防抖是触发高频事件后n秒后函数执行一次，如果n秒内高频事件再次被触发，则重新计算时间
+
 ``` js
 function debounce(fn, delay) {
     let timer = null
@@ -54,6 +56,8 @@ function debounce(fn, delay) {
 ```
 
 # 节流
+
+> 节流是触发高频事件后，n秒内函数只会执行一次，会稀释函数的执行频率
 
 ``` js
 function throttle(fn, delay) {
@@ -228,7 +232,6 @@ Function.prototype.bind2 = function (context, ...args) {
 元素宽：100px    rem = 100 / (750 / 10) = 1.33rem
 元素高: 50px     rem = 50 / (750 / 10) = 0.66rem
 
-
 ``` js
 (function () {
   function setRootSize() {
@@ -239,5 +242,6 @@ Function.prototype.bind2 = function (context, ...args) {
   document.addEventListener('resize', setRootSize1)
 })()
 ```
+> 多种实现方案请查看[移动端适配解决方案](https://github.com/Amyas/mobile-rem-vw)
 
 # promise
