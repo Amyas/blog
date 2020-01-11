@@ -1,5 +1,5 @@
 ---
-title: redis
+title: Redis学习总结
 date: 2019-08-06 16:41:44
 tags:
 ---
